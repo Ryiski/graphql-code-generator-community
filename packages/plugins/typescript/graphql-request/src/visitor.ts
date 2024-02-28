@@ -132,22 +132,22 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor<
           }
           return `${operationName}(variables${optionalVariables ? '?' : ''}: ${
             o.operationVariablesTypes
-          }, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: ${
+          }, requestHeaders?: GraphQLClientRequestHeaders, signal?: AbortSignal): Promise<{ data: ${
             o.operationResultType
           }; errors?: GraphQLError[]; extensions?: ${
             this.config.extensionsType
           }; headers: Headers; status: number; }> {
     return withWrapper((wrappedRequestHeaders) => client.rawRequest<${
       o.operationResultType
-    }>(${docArg}, variables, {...requestHeaders, ...wrappedRequestHeaders}), '${operationName}', '${operationType}', variables);
+    }>({ document: ${docArg}, variables, requestHeaders: {...requestHeaders, ...wrappedRequestHeaders}, signal }), '${operationName}', '${operationType}', variables);
 }`;
         }
         return `${operationName}(variables${optionalVariables ? '?' : ''}: ${
           o.operationVariablesTypes
-        }, requestHeaders?: GraphQLClientRequestHeaders): Promise<${o.operationResultType}> {
+        }, requestHeaders?: GraphQLClientRequestHeaders, signal?: AbortSignal): Promise<${o.operationResultType}> {
   return withWrapper((wrappedRequestHeaders) => client.request<${
     o.operationResultType
-  }>(${docVarName}, variables, {...requestHeaders, ...wrappedRequestHeaders}), '${operationName}', '${operationType}', variables);
+  }>({ document: ${docVarName}, variables, requestHeaders: {...requestHeaders, ...wrappedRequestHeaders}, signal }), '${operationName}', '${operationType}', variables);
 }`;
       })
       .filter(Boolean)
